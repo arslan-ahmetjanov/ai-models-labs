@@ -1,0 +1,48 @@
+name: notebooks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  execute:
+    name: execute notebooks
+    runs-on: ubuntu-latest
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Validate notebook JSON
+        run: |
+          python - <<'PY'
+          import glob, json
+          files = sorted(glob.glob('notebooks/*.ipynb'))
+          if not files:
+              raise SystemExit('no notebooks found')
+          for path in files:
+              with open(path, encoding='utf-8') as f:
+                  json.load(f)
+              print('ok', path)
+          PY
+
+      # Выполнение сверху вниз ловит расхождения с окружением: импорты,
+      # удалённые имена NumPy, забытые ячейки. Результат пишется в /tmp,
+      # чтобы сохранённые в репозитории выводы не мешали проверке.
+      - name: Execute notebooks
+        run: |
+          mkdir -p /tmp/executed
+          for f in notebooks/*.ipynb; do
+            python -m jupyter nbconvert --to notebook --execute "$f" \
+              --output-dir /tmp/executed \
+              --ExecutePreprocessor.timeout=600
+          done
