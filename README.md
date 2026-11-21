@@ -4,7 +4,7 @@
 
 ![Python 3.13](https://img.shields.io/badge/Python-3.13-3776ab)
 ![NumPy 2.x](https://img.shields.io/badge/NumPy-2.x-013243)
-![Pandas 2.x](https://img.shields.io/badge/Pandas-2.x-150458)
+![Pandas 3.x](https://img.shields.io/badge/Pandas-3.x-150458)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-3.x-11557c)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-f37626)
 
